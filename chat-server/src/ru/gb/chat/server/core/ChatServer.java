@@ -142,8 +142,10 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             } else {
                 //oldClient.reconnect();
                 clients.remove(oldClient);
-                // здесь вызвать метод смены никнейм SqlClient.changeNickname
-                // здесь вызвать метод добавления в базу SqlClient.addUsersInDB
+//                вызвать метод смены никнейм SqlClient.changeNickname
+//                вызвать метод добавления в базу SqlClient.addUsersInDB для неавторизованых
+//                SqlClient.addUsersInDB(login, password, client.getNickname());
+//                client.authAccept(client.getNickname());
             }
         }
         sendToAllAuthorizedClients(Common.getUserList(getUsers()));

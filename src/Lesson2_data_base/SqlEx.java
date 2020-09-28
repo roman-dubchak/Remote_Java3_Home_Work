@@ -55,7 +55,7 @@ public class SqlEx {
             statement.executeUpdate(updateNickname);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+    }
         return null;
     }
 }
