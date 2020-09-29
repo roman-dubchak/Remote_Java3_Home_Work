@@ -26,11 +26,11 @@ public class SqlClient {
     }
 
     synchronized static String getNickname(String login, String password) {
-        String query = String.format("select nickname from users where login='%s' and password='%s'", login, password);
-        try (ResultSet set = statement.executeQuery(query)) {
+        String query = String.format("select nickname from users where login='%s' and password='%s'", login.trim(), password);
+//        trim удаляет пробелы в начале и в конце String
+        try (ResultSet set = statement.executeQuery(query)) { // не неужен close ResultSet, тк Try с русерсами
             if (set.next()){
                 return set.getString("nickname");}
-            else set.close(); // здесь не лишний клоуз?
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -48,9 +48,9 @@ public class SqlClient {
         return null;
     }
 
-    synchronized static String changeNickname(String newLogin, String login, String password) {
+    synchronized static String changeNickname(String login, String password, String newLogin) {
         String updateNickname = String.format("update users set nickname='%s' where login='%s' and password='%s'",
-                                newLogin, login, password);
+                                 login, password, newLogin);
         try {
             statement.executeUpdate(updateNickname);
         } catch (SQLException e) {
