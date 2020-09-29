@@ -9,7 +9,7 @@ public class SqlEx {
     synchronized static void connect() {
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:chat-server/chat.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:chat-server/chat_j3.db");
             statement = connection.createStatement();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
@@ -26,11 +26,11 @@ public class SqlEx {
     }
 
     synchronized static String getNickname(String login, String password) {
-        String query = String.format("select nickname from users where login='%s' and password='%s'", login, password);
-        try (ResultSet set = statement.executeQuery(query)) {
+        String query = String.format("select nickname from users where login='%s' and password='%s'", login.trim(), password);
+//        trim удаляет пробелы в начале и в конце String
+        try (ResultSet set = statement.executeQuery(query)) { // не неужен close ResultSet, тк Try с русерсами
             if (set.next()){
                 return set.getString("nickname");}
-            else set.close(); // здесь не лишний клоуз?
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +38,7 @@ public class SqlEx {
     }
 
     synchronized static String addUsersInDB (String login, String password, String nickname) {
-        String addUser = String.format("insert into users (login, password, nickname) value('%s', '%s', '%s')",
+        String addUser = String.format("insert into users (login, password, nickname) values('%s', '%s', '%s')",
                 login, password, nickname);
         try {
             statement.execute(addUser);
@@ -48,14 +48,14 @@ public class SqlEx {
         return null;
     }
 
-    synchronized static String changeNickname(String newLogin, String login, String password) {
+    synchronized static String changeNickname(String login, String password, String newLogin) {
         String updateNickname = String.format("update users set nickname='%s' where login='%s' and password='%s'",
-                newLogin, login, password);
+                login, password, newLogin);
         try {
             statement.executeUpdate(updateNickname);
         } catch (SQLException e) {
             e.printStackTrace();
-    }
+        }
         return null;
     }
 }
