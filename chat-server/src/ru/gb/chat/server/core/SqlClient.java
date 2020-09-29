@@ -9,7 +9,7 @@ public class SqlClient {
     synchronized static void connect() {
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:chat-server/chat.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:chat-server/chat_j3.db");
             statement = connection.createStatement();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
@@ -38,7 +38,7 @@ public class SqlClient {
     }
 
     synchronized static String addUsersInDB (String login, String password, String nickname) {
-        String addUser = String.format("insert into users (login, password, nickname) value('%s', '%s', '%s')",
+        String addUser = String.format("insert into users (login, password, nickname) values('%s', '%s', '%s')",
                                 login, password, nickname);
         try {
             statement.execute(addUser);

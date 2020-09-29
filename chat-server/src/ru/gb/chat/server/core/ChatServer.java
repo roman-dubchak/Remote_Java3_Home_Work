@@ -6,6 +6,8 @@ import ru.gb.javatwo.network.ServerSocketThreadListener;
 import ru.gb.javatwo.network.SocketThread;
 import ru.gb.javatwo.network.SocketThreadListener;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
