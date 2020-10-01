@@ -31,22 +31,23 @@ class FileHistoryChat {
 
     public static synchronized List<String> wrtHistoryMsg(File fileHistory) throws IOException{
         try {
-            BufferedReader in = new BufferedReader (new FileReader(fileHistory));
-            BufferedWriter out = new BufferedWriter (new FileWriter(fileLog));
+            BufferedReader reader = new BufferedReader (new FileReader(fileHistory));
+            BufferedWriter writer = new BufferedWriter (new FileWriter(fileLog));
             if (fileHistory.canRead()){
-                listLogMsg.add(in.readLine());
-                System.out.println(listLogMsg);
-
+                while (reader.ready()) {
+                    listLogMsg.add(reader.readLine());
+                    System.out.println(listLogMsg);
+                }
             }
             if (fileLog.canWrite()){
                 for (int i = 0; i < listLogMsg.size(); i++) {
                     if (i >= 100) continue;
-                    out.write(listLogMsg.toString());
+                    writer.write(listLogMsg.toString());
                 }
             }
-            in.close();
-            out.flush();
-            out.close();
+            reader.close();
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
