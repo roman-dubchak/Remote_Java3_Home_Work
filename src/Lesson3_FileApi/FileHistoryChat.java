@@ -1,7 +1,5 @@
 package Lesson3_FileApi;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,39 +7,48 @@ import java.util.List;
 class FileHistoryChat {
     private static String msgLogChat = "История чата";
     private static File fileHistory = new File("D:\\Java\\java3\\java3_Home_Work\\file_history_chat.txt");
-    public static List<String> listLogMsg = new ArrayList<String>();
+    private static File fileLog = new File("D:\\Java\\java3\\java3_Home_Work\\file_log_chat.txt");
+    public static List<String> listLogMsg = new ArrayList<String>(100);
 
     public static BufferedInputStream in;
     public static BufferedOutputStream out;
 
     public static void main(String[] args) throws IOException {
-        wrtMsgToLogFile(msgLogChat);
+//        wrtMsgToLogFile(msgLogChat);
         wrtHistoryMsg (fileHistory);
-
     }
-
 
     public static synchronized void wrtMsgToLogFile (String msg) throws IOException {
         try (FileWriter out = new FileWriter(fileHistory, true)) {
             if (fileHistory.canWrite()) {
                 out.write(msg + "\n");
                 out.flush();
+                out.close();
+                System.out.println("запись в файл");
             }
         }
     }
 
     public static synchronized List<String> wrtHistoryMsg(File fileHistory) throws IOException{
         try {
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileHistory));
-            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(fileHistory));
+            BufferedReader in = new BufferedReader (new FileReader(fileHistory));
+            BufferedWriter out = new BufferedWriter (new FileWriter(fileLog));
             if (fileHistory.canRead()){
-                int msg = in.read();
-                listLogMsg.add(out.toString());
+                listLogMsg.add(in.readLine());
+                System.out.println(listLogMsg);
+
             }
-        } finally {
+            if (fileLog.canWrite()){
+                for (int i = 0; i < listLogMsg.size(); i++) {
+                    if (i >= 100) continue;
+                    out.write(listLogMsg.toString());
+                }
+            }
             in.close();
             out.flush();
             out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return listLogMsg;
     }
