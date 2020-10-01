@@ -1,9 +1,6 @@
 package ru.gb.javatwo.network;
 
-import java.io.Closeable;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class SocketThread extends Thread implements Closeable {
@@ -11,6 +8,7 @@ public class SocketThread extends Thread implements Closeable {
     private final SocketThreadListener listener;
     private final Socket socket;
     private DataOutputStream out;
+    private DataOutputStream in;
 
     public SocketThread(SocketThreadListener listener, String name, Socket socket) {
         super(name);
@@ -50,6 +48,16 @@ public class SocketThread extends Thread implements Closeable {
             return false;
         }
     }
+
+    public synchronized void wrtMsgToLogFile (String msg) {
+        try (FileWriter out = new FileWriter("log.txt", true)) {
+            out.write(msg + "\n");
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public synchronized void close() {

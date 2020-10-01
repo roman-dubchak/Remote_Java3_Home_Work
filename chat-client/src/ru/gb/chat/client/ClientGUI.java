@@ -129,13 +129,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         String msg = tfMessage.getText();
         if ("".equals(msg)) return;
         tfMessage.setText(null);
-        tfMessage.grabFocus();
+        tfMessage.grabFocus(); // возврат фокуса в текстовое поле
         socketThread.sendMessage(Common.getTypeBcastClient(msg));
+        wrtMsgToLogFile (tfLogin.getText(), msg);
     }
 
-    private void wrtMsgToLogFile(String msg, String username) {
+    private void wrtMsgToLogFile(String username, String msg) {
         try (FileWriter out = new FileWriter("log.txt", true)) {
-            out.write(username + ": " + msg + "\n");
+            out.write(username + " : " + msg + "\n");
             out.flush();
         } catch (IOException e) {
             if (!shownIoErrors) {
@@ -179,6 +180,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     @Override
     public void onSocketStart(SocketThread thread, Socket socket) {
         putLog("Start");
+        // История сообщений
     }
 
     @Override

@@ -91,7 +91,6 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
      * Socket Thread Listener methods
      * */
 
-
     @Override
     public void onSocketStart(SocketThread thread, Socket socket) {
         putLog("Client thread started");
