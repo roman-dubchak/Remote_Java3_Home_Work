@@ -7,7 +7,8 @@ public class ServerSocketThreadExecute {
     ExecutorService executorService;
     ServerSocketThread serverSocketThread;
 
-    public ServerSocketThreadExecute (){
+    public ServerSocketThreadExecute (ServerSocketThread serverSocketThread){
+        this.serverSocketThread = serverSocketThread;
         executorService = Executors.newFixedThreadPool(10);
         System.out.println("ServerSocketThreadExecute is start");
         executorService.execute(serverSocketThread);

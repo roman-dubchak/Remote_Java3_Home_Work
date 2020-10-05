@@ -18,7 +18,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     // HW4 Execute
 //    private ServerSocketThreadExecute serverExecutor;
     // HW4 Execute var 2
-//    private ExecutorService executorService = Executors.newCachedThreadPool();
+    private ExecutorService executorService = Executors.newCachedThreadPool();
 
     private final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss: ");
     private Vector<SocketThread> clients = new Vector<>();
