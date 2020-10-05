@@ -1,10 +1,7 @@
 package ru.gb.chat.server.core;
 
 import ru.gb.chat.common.Common;
-import ru.gb.javatwo.network.ServerSocketThread;
-import ru.gb.javatwo.network.ServerSocketThreadListener;
-import ru.gb.javatwo.network.SocketThread;
-import ru.gb.javatwo.network.SocketThreadListener;
+import ru.gb.javatwo.network.*;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +13,9 @@ import java.util.Vector;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
     private ServerSocketThread server;
+    // HW4 Execute
+//    private ServerSocketThreadExecute serverExecutor;
+
     private final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss: ");
     private Vector<SocketThread> clients = new Vector<>();
     private ChatServerListener listener;
@@ -29,6 +29,8 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             putLog("Server already stared");
         } else {
             server = new ServerSocketThread(this,"Chat server", port, 2000);
+            // HW4 Execute
+//            serverExecutor = new ServerSocketThreadExecute();
         }
     }
 
