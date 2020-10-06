@@ -15,9 +15,8 @@ import java.util.concurrent.Executors;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
     private ServerSocketThread server;
-    // HW4 Execute
-//    private ServerSocketThreadExecute serverExecutor;
-    // HW4 Execute var 2
+
+    // HW4 Execute var 1
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
     private final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss: ");
@@ -32,11 +31,11 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         if (server != null && server.isAlive()) {
             putLog("Server already stared");
         } else {
-            server = new ServerSocketThread(this,"Chat server", port, 2000);
-            // HW4 Execute
-//            serverExecutor = new ServerSocketThreadExecute();
-            // HW4 Execute var 2
-//            executorService.execute(new ServerSocketThread(this,"Chat server", port, 2000));
+//            server = new ServerSocketThread(this,"Chat server", port, 2000);
+            // HW4 Execute var 1
+            executorService.execute( () -> {
+                new ServerSocketThread(this,"Chat server", port, 2000);
+            });
         }
     }
 
@@ -45,8 +44,8 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             putLog("Server is not running");
         } else {
             server.interrupt();
-//            HW4 Execute var 2
-//            executorService.shutdown();
+//            HW4 Execute var 1
+            executorService.shutdown();
         }
     }
 
@@ -89,9 +88,12 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void onSocketAccepted(ServerSocketThread thread, ServerSocket server, Socket socket) {
         // client connected
         String name = "Client " + socket.getInetAddress() + ":" + socket.getPort();
-        //HW4 Execute var 2
-//        executorService.execute(new ClientThread(this, name, socket));
-        new ClientThread(this, name, socket);
+
+        //HW4 Execute var 1
+        executorService.execute( () -> {
+                new ClientThread(this, name, socket);
+        });
+//        new ClientThread(this, name, socket);
     }
 
     @Override

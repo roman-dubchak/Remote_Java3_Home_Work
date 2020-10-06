@@ -2,6 +2,8 @@ package ru.gb.javatwo.network;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SocketThread extends Thread implements Closeable {
 
@@ -9,6 +11,7 @@ public class SocketThread extends Thread implements Closeable {
     private final Socket socket;
     private DataOutputStream out;
     private DataOutputStream in;
+    private ExecutorService executorService = Executors.newCachedThreadPool();
 
     public SocketThread(SocketThreadListener listener, String name, Socket socket) {
         super(name);
