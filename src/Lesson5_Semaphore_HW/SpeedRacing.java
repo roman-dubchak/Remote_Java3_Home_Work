@@ -2,15 +2,19 @@ package Lesson5_Semaphore_HW;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Semaphore;
 
 public class SpeedRacing {
     public static final int CARS_COUNT = 4;
     public static void main(String[] args) {
+
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
+
         Race race = new Race(new Road(60), new Tunnel(), new Road(40));
         Car[] cars = new Car[CARS_COUNT];
         for (int i = 0; i < cars.length; i++) {
-            cars[i] = new Car(race, 20 + (int) (Math.random() * 10));
+            cars[i] = new Car(race, 20 + (int) (Math.random() * 10), new CyclicBarrier(CARS_COUNT));
         }
         for (int i = 0; i < cars.length; i++) {
             new Thread(cars[i]).start();
@@ -21,22 +25,29 @@ public class SpeedRacing {
 }
 
 class Car implements Runnable {
-    private static int CARS_COUNT;
+    private static int CARS_COUNT; //
+    private static CyclicBarrier cbr;
+    private static boolean win = true;
     static {
         CARS_COUNT = 0;
     }
+
     private Race race;
     private int speed;
     private String name;
+
     public String getName() {
         return name;
     }
+
     public int getSpeed() {
         return speed;
     }
-    public Car(Race race, int speed) {
+
+    public Car(Race race, int speed, CyclicBarrier cbr) {
         this.race = race;
         this.speed = speed;
+        this.cbr = cbr;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
@@ -46,11 +57,16 @@ class Car implements Runnable {
             System.out.println(this.name + " готовится");
             Thread.sleep(500 + (int)(Math.random() * 800));
             System.out.println(this.name + " готов");
+            cbr.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
+            if(i == race.getStages().size() - 1 && win){
+                System.out.println(this.name + " WIN");
+                win = false;
+            }
         }
     }
 }
@@ -80,7 +96,9 @@ class Road extends Stage {
         }
     }
 }
+
 class Tunnel extends Stage {
+    private static final Semaphore smp = new Semaphore(2);
     public Tunnel() {
         this.length = 80;
         this.description = "Тоннель " + length + " метров";
@@ -90,12 +108,14 @@ class Tunnel extends Stage {
         try {
             try {
                 System.out.println(c.getName() + " готовится к этапу(ждет): " + description);
+                smp.acquire();
                 System.out.println(c.getName() + " начал этап: " + description);
                 Thread.sleep(length / c.getSpeed() * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
                 System.out.println(c.getName() + " закончил этап: " + description);
+                smp.release();
             }
         } catch (Exception e) {
             e.printStackTrace();
