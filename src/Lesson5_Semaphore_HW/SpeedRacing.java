@@ -2,11 +2,15 @@ package Lesson5_Semaphore_HW;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
 public class SpeedRacing {
     public static final int CARS_COUNT = 4;
+    public static final CyclicBarrier clb = new CyclicBarrier(CARS_COUNT);
+    public static final CountDownLatch startLatch = new CountDownLatch(CARS_COUNT);
+    public static final CountDownLatch finishLatch = new CountDownLatch(CARS_COUNT);
     public static void main(String[] args) {
 
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
@@ -14,19 +18,28 @@ public class SpeedRacing {
         Race race = new Race(new Road(60), new Tunnel(), new Road(40));
         Car[] cars = new Car[CARS_COUNT];
         for (int i = 0; i < cars.length; i++) {
-            cars[i] = new Car(race, 20 + (int) (Math.random() * 10), new CyclicBarrier(CARS_COUNT));
+            cars[i] = new Car(race, 20 + (int) (Math.random() * 10), clb, startLatch, finishLatch);
         }
         for (int i = 0; i < cars.length; i++) {
             new Thread(cars[i]).start();
         }
-        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
-        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
+        try {
+            startLatch.await();
+            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
+            finishLatch.await();
+            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 
 class Car implements Runnable {
     private static int CARS_COUNT; //
     private static CyclicBarrier cbr;
+    private static CountDownLatch startLatch;
+    private static CountDownLatch finishLatch;
+
     private static boolean win = true;
     static {
         CARS_COUNT = 0;
@@ -44,10 +57,12 @@ class Car implements Runnable {
         return speed;
     }
 
-    public Car(Race race, int speed, CyclicBarrier cbr) {
+    public Car(Race race, int speed, CyclicBarrier cbr, CountDownLatch startLatch, CountDownLatch finishLatch) {
         this.race = race;
         this.speed = speed;
         this.cbr = cbr;
+        this.startLatch = startLatch;
+        this.finishLatch = finishLatch;
         CARS_COUNT++;
         this.name = "Участник #" + CARS_COUNT;
     }
@@ -57,6 +72,7 @@ class Car implements Runnable {
             System.out.println(this.name + " готовится");
             Thread.sleep(500 + (int)(Math.random() * 800));
             System.out.println(this.name + " готов");
+            startLatch.countDown();
             cbr.await();
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,6 +84,7 @@ class Car implements Runnable {
                 win = false;
             }
         }
+        finishLatch.countDown();
     }
 }
 
