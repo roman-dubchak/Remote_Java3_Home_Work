@@ -80,8 +80,8 @@ class Car implements Runnable {
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
             if(i == race.getStages().size() - 1 && win){
-                System.out.println(this.name + " WIN");
                 win = false;
+                System.out.println(this.name + " WIN");
             }
         }
         finishLatch.countDown();
