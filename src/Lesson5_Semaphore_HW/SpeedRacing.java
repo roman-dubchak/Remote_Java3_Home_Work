@@ -1,19 +1,38 @@
 package Lesson5_Semaphore_HW;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
+import java.util.logging.*;
 
 public class SpeedRacing {
+    private static final Logger logger = Logger.getLogger(SpeedRacing.class.getName());
     public static final int CARS_COUNT = 4;
     public static final CyclicBarrier clb = new CyclicBarrier(CARS_COUNT);
     public static final CountDownLatch startLatch = new CountDownLatch(CARS_COUNT);
     public static final CountDownLatch finishLatch = new CountDownLatch(CARS_COUNT);
-    public static void main(String[] args) {
+    public static void main(String[] args)  throws IOException  {
+
+        logger.setLevel(Level.ALL);
+
+        Handler h = new FileHandler("racing_log.log");
+        h.setFormatter(new SimpleFormatter());
+        h.setLevel(Level.ALL);
+        h.setFilter(new Filter() {
+            @Override
+            public boolean isLoggable(LogRecord record) {
+                if (record.getMessage().startsWith("ВАЖНОЕ ОБЪЯВЛЕНИЕ"))
+                    return true;
+                return false;
+            }
+        });
+        logger.addHandler(h);
 
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
+        logger.log(Level.CONFIG, "ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
 
         Race race = new Race(new Road(60), new Tunnel(), new Road(40));
         Car[] cars = new Car[CARS_COUNT];
@@ -26,8 +45,10 @@ public class SpeedRacing {
         try {
             startLatch.await();
             System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
+            logger.log(Level.CONFIG, "ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
             finishLatch.await();
             System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
+            logger.log(Level.CONFIG, "ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
