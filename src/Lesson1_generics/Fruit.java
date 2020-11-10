@@ -7,7 +7,7 @@ public abstract class Fruit {
         return this.weight;
     }
 
-    public void setWeight(double weight){
+    public Fruit(double weight) {
         this.weight = weight;
     }
 }

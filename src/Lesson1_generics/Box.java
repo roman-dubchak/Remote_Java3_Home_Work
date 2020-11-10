@@ -5,38 +5,32 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Box <T extends Fruit> {
-    private List<T> fruits;
+    private List<T> container;
 
-    private Box() {
-    fruits = new ArrayList<>();
+    private Box(T... fruits) {
+    container = new ArrayList<>(Arrays.asList(fruits));
 }
-
-    private List<T> getFruits() {
-        return fruits;
-    }
     private double getWeight() {
-    return fruits.stream().mapToDouble(Fruit::getWeight).sum();
+    // return container.stream().mapToDouble(Fruit::getWeight).sum(); // Ваиант со Stream API
+        if (container.size() == 0) return 0.0f;
+
+        double w = 0.0f;
+        for (int i = 0; i < container.size(); i++) {
+            w += container.get(i).getWeight();
+        }
+        return w;
     }
 
-    private void clearBox(){
-        fruits.clear();
+    public boolean compare (Box<?> another){
+        return Math.abs(this.getWeight() - another.getWeight()) < 0.0001f;
     }
 
-    private void putBox(T ...fruit){
-        fruits.addAll(Arrays.asList(fruit));
+    private void addFruit(T ...fruit){
+        container.addAll(Arrays.asList(fruit));
     }
 
-    private void putAll(Box<T> box){
-        fruits.addAll(box.getFruits());
+    private void putAll(Box<? super T> box){ // перекинуть лмбо из яблок в яблок, либо из яблок в родителя
+        box.container.addAll(this.container);
+        this.container.clear();
     }
-
-    public <E extends Fruit> boolean compare (Box<E> box){
-        return getWeight() == box.getWeight();
-
-    }
-//    boolean find (List<Apple> listApple, Fruit fruits){
-//        for(Fruit f : listApple){
-//            if (f.)
-//        }
-//    }
 }

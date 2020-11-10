@@ -1,6 +1,7 @@
 package Lesson1_generics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Generics {
     public static void main(String[] args) {
@@ -23,16 +24,27 @@ public class Generics {
             T obj = array[i];
             array [i] = array [array.length - 1];
             array [array.length - 1] = obj;
+            // можно через метод swap
+        }
+    }
+
+    // можно без дженериков
+    static void arrChangeObj (Object[] array){
+        for (int i = 0; i < 1; i++) {
+            Object obj = array[i];
+            array [i] = array [array.length - 1];
+            array [array.length - 1] = obj;
             // позже нашел метод swap, который повторяет тот, что я написал))
         }
     }
 
     static <T> ArrayList arrToArrayList (T[] array) {
-        ArrayList <T> arrayList = new ArrayList<>();
-        for (int i = 0; i < array.length; i++) {
-            arrayList.add(array[i]);
-            System.out.println("Arraylist #" + i + " : " + arrayList); // to check
-        }
-        return arrayList;
+//        ArrayList <T> arrayList = new ArrayList<>();
+//        for (int i = 0; i < array.length; i++) {
+//            arrayList.add(array[i]);
+//            System.out.println("Arraylist #" + i + " : " + arrayList); // to check
+//        }
+//        return arrayList;
+        return new ArrayList<T>(Arrays.asList(array));
     }
 }
