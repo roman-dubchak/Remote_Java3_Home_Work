@@ -45,6 +45,9 @@ public class Generics {
 //            System.out.println("Arraylist #" + i + " : " + arrayList); // to check
 //        }
 //        return arrayList;
-        return new ArrayList<T>(Arrays.asList(array));
+
+        if (array != null) {
+            return new ArrayList<T>(Arrays.asList(array));
+        } else return null;
     }
 }

@@ -11,7 +11,7 @@ public class Box <T extends Fruit> {
     container = new ArrayList<>(Arrays.asList(fruits));
 }
     private double getWeight() {
-    // return container.stream().mapToDouble(Fruit::getWeight).sum(); // Ваиант со Stream API
+    // return container.stream().mapToDouble(Fruit::getWeight).sum(); // Вариант со Stream API
         if (container.size() == 0) return 0.0f;
 
         double w = 0.0f;
@@ -22,11 +22,12 @@ public class Box <T extends Fruit> {
     }
 
     public boolean compare (Box<?> another){
+        // даблы не сравниваем напрямую == ошибка округления
         return Math.abs(this.getWeight() - another.getWeight()) < 0.0001f;
     }
 
     private void addFruit(T ...fruit){
-        container.addAll(Arrays.asList(fruit));
+        container.addAll(Arrays.asList(fruit)); // массив из фруктов, чтобы не подавать одно и тоже яблоко n раз
     }
 
     private void putAll(Box<? super T> box){ // перекинуть лмбо из яблок в яблок, либо из яблок в родителя
