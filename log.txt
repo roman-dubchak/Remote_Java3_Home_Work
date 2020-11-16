@@ -1,0 +1,11 @@
+Roman : привет
+Roman : Как дела?
+Roman : Пока
+Roman : Добро еутро
+Roman : Как добавит весь putLog сюда?
+Roman : hello
+Roman : ва
+Roman : hello
+Roman : hellow
+Roman : hello
+Roman : hello

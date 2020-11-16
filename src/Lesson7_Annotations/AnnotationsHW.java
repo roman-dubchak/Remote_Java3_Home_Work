@@ -47,7 +47,7 @@ public class AnnotationsHW {
         Method[] methods = testClass.getDeclaredMethods();
         for(Method m : methods){
             m.setAccessible(true);
-            m.invoke(testClass,)
+//            m.invoke(testClass)
         }
     }
 }
