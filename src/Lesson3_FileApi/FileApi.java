@@ -6,16 +6,27 @@ import java.util.Arrays;
 
 public class FileApi {
     public static void main(String[] args) throws Exception {
-       Student st = new Student(1, "Bob");
+
+        Book book = new Book("Jungle Book Path I");
+        Student st1 = new Student(1, "Bob", book);
+        Student st2 = new Student(2, "Bob", book);
 
        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("student.ser"));
-       os.writeObject(st);
+//        book.title = "Jungle Path II";
+       os.writeObject(st1);
+       book.title = "Jungle Path II"; // название не изенится, т.к. уже записана в st1
+        os.reset(); // сбрасывает галочки в схеме, перезапишет book с новым названием
+       os.writeObject(st2);
        os.close();
 
        ObjectInputStream is = new ObjectInputStream(new FileInputStream("student.ser"));
+       Student s1 = (Student)is.readObject();
        Student s2 = (Student)is.readObject();
+       s1.info();
        s2.info();
        is.close();
+
+       System.out.printf("%s\n%s\n", s1.book.title, s2.book.title);
     }
 
     private static File getFileExample() {
